@@ -185,35 +185,17 @@ class _AdminPageState extends State<AdminPage> {
                               const AdminStorageDetails(),
                             const SizedBox(height: defaultPadding),
                             if (AdminResponsive.isMobile(context))
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                               Column(
                                 children: [
-                                  const Column(
-                                    children: [
-                                      Text(
-                                        "Contact Details",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 10),
-                                      ),
-                                      Text(
-                                        "FOR SUPPORT: 123456789",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 10),
-                                      ),
-                                      Text(
-                                        "POWERED BY: PIONEER 2023",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 10),
-                                      ),
-                                    ],
-                                  ),
-                                  FloatingActionButton.extended(
-                                    onPressed: () {
-                                      // Save data
-                                    },
-                                    label: const Icon(Icons.message_outlined),
-                                  ),
+                                  // Text(
+                                  //   "POWERED BY: PIONEER 2023",
+                                  //   style: TextStyle(
+                                  //       color: Colors.black, fontSize: 10),
+                                  // ),
+                                  SizedBox(
+                                      height: 60,
+                                      width: 60,
+                                      child: Image.asset('assets/images/pioneer_logo_app.png')),
                                 ],
                               ),
                             const SizedBox(
@@ -254,7 +236,8 @@ class _AdminPageState extends State<AdminPage> {
               ),
             ),
           );
-        } else {
+        }
+        else {
           return Expanded(
             child: Scaffold(
               body: Container(

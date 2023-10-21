@@ -1,4 +1,5 @@
 import 'package:flutter/Material.dart';
+import '../../../constants/AppColor_constants.dart';
 import 'empDrawerItems.dart';
 
 class EmpDrawerItem {
@@ -14,46 +15,49 @@ class EmpDrawer extends StatelessWidget {
   const EmpDrawer({super.key, required this.onSelectedItems});
 
   @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Image.asset(
+  Widget build(BuildContext context) {
+    return Container(
+
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            /*
+            Center(
+              // Center the image
+              child: Image.asset(
                 "assets/images/pioneer_logo_app.png",
-                height: 180,
+                height: screenHeight / 15,
               ),
-              buildDrawerItems(context),
-            ],
-          ),
+            ),
+
+             */
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 25),
+              child: buildDrawerItems(context),
+            ),
+          ],
         ),
-      );
+      ),
+    );
+  }
 
   Widget buildDrawerItems(BuildContext context) => Column(
         children: EmpDrawerItems.all
             .map(
               (item) => ListTile(
                 contentPadding: EdgeInsets.fromLTRB(
-                    MediaQuery.of(context).size.height / 30,
-                    MediaQuery.of(context).size.height / 22.5,
-                    0,
-                    0),
-                leading: Icon(item.icon, color: Colors.black),
+                    0, MediaQuery.of(context).size.height / 22.5, 0, 0),
+                leading: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 45, 0), // Adjust the padding as needed
+                  child: Icon(item.icon, color: Colors.black87),
+                ),
                 title: Text(
                   item.title,
                   style: const TextStyle(
                     color: Colors.black,
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    shadows: [
-                      Shadow(
-                        color: Colors.grey, // Color of the shadow
-                        offset:
-                            Offset(2, 2), // Offset of the shadow from the text
-                        blurRadius: 3, // Blur radius of the shadow
-                      ),
-                      // You can add more Shadow objects for multiple shadows
-                    ],
                   ),
                 ),
                 onTap: () => onSelectedItems(item),
