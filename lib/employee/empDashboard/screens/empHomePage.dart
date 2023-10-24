@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
@@ -39,6 +40,41 @@ class _HomePageState extends State<EmpDashHome> {
     checkLocationPermission();
     checkLocationPermissionAndFetchLocation();
     _retrieveCorporateID();
+  }
+
+  Future<bool?> _onBackPressed(BuildContext context) async {
+    bool? exitConfirmed = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Confirm Exit'),
+        content: Text('Are you sure you want to exit the app?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+            child: Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+            child: Text('Yes'),
+          ),
+        ],
+      ),
+    );
+
+    if (exitConfirmed == true) {
+      exitApp();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void exitApp() {
+    SystemNavigator.pop();
   }
 
   Future<void> _retrieveCorporateID() async {
@@ -163,6 +199,14 @@ class _HomePageState extends State<EmpDashHome> {
                           return SingleChildScrollView(
                             child: Column(
                               children: [
+                                //ASK WETHER TO EXIT APP OR NOT
+                                WillPopScope(
+                                  onWillPop: () async {
+                                    return _onBackPressed(context)
+                                        .then((value) => value ?? false);
+                                  },
+                                  child: const SizedBox(),
+                                ),
                                 Container(
                                   padding: EdgeInsets.symmetric(
                                       horizontal: 10,
@@ -183,7 +227,7 @@ class _HomePageState extends State<EmpDashHome> {
                                             ),
                                             child: ClipOval(
                                               child: Image.asset(
-                                                "assets/icons/man.png",
+                                                "assets/icons/userr.png",
                                                 width: 100,
                                                 height: 45,
                                               ),
@@ -356,7 +400,9 @@ class _HomePageState extends State<EmpDashHome> {
                                               Navigator.push(
                                                   context,
                                                   PageTransition(
-                                                      child: ReportsMainPage(),
+                                                      child: ReportsMainPage(
+                                                        viaDrawer: false,
+                                                      ),
                                                       type: PageTransitionType
                                                           .rightToLeft));
                                             },
