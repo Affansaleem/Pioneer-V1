@@ -7,10 +7,13 @@ import 'package:project/admin/adminProfile/models/AdminProfileRepository.dart';
 import 'package:project/constants/AppColor_constants.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../No_internet/no_internet.dart';
 import '../../../introduction/bloc/bloc_internet/internet_bloc.dart';
 import '../../../introduction/bloc/bloc_internet/internet_state.dart';
+import '../../../login/bloc/loginBloc/loginbloc.dart';
+import '../../../login/screens/loginPage.dart';
 import '../../adminDashboard/screen/adminMain.dart';
 import '../bloc/admin_profile_bloc.dart';
 import '../bloc/admin_profile_event.dart';
@@ -29,6 +32,25 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
   late AdminProfileBloc adminProfileBloc;
   UserProfile userProfile = UserProfile('Loading...', 'Loading...');
 
+  Future<void> _logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLoggedIn', false);
+    prefs.setBool('isEmployee', false);
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return Builder(
+            builder: (context) => BlocProvider(
+              create: (context) => SignInBloc(),
+              child: LoginPage(),
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -389,27 +411,9 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
 
 
                                 const SizedBox(height: 20),
-                                const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.info,
-                                      color: Colors.green,
-                                      size: 32,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      'Information',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+
                                 const SizedBox(height: 20),
-                                const Row(
+                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Icon(
@@ -418,12 +422,15 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                                       size: 32,
                                     ),
                                     SizedBox(width: 10),
-                                    Text(
-                                      'Logout',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500,
+                                    GestureDetector(
+                                      onTap: () => _logout(context),
+                                      child: Text(
+                                        'Logout',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                     ),
                                   ],

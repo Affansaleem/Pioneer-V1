@@ -6,17 +6,17 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:project/constants/AppColor_constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../login/bloc/loginBloc/loginbloc.dart';
+import '../../../login/screens/loginPage.dart';
 import '../bloc/emProfileApiFiles/emp_profile_api_bloc.dart';
 import '../models/empProfileModel.dart';
 import '../models/empProfileRepository.dart';
 import 'EditProfile_page.dart';
 
 class EmpProfilePage extends StatefulWidget {
-
-
   EmpProfilePage({
     super.key,
-
   });
 
   @override
@@ -25,6 +25,25 @@ class EmpProfilePage extends StatefulWidget {
 
 class _EmpProfilePageState extends State<EmpProfilePage> {
   late EmpProfileApiBloc _profileApiBloc;
+  Future<void> _logout(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLoggedIn', false);
+    prefs.setBool('isEmployee', false);
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return Builder(
+            builder: (context) => BlocProvider(
+              create: (context) => SignInBloc(),
+              child: LoginPage(),
+            ),
+          ); // Navigate back to LoginPage
+        },
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -64,11 +83,9 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
     }
   }
 
-
   void exitApp() {
     SystemNavigator.pop();
   }
-
 
   // Method to initialize the BlocProvider
   void _initProfileBloc() {
@@ -103,7 +120,6 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
 
             List<EmpProfileModel> userList = state.users;
             final employeeProfile = userList[0];
-
             return Scaffold(
               backgroundColor: AppColors.offWhite,
               body: SingleChildScrollView(
@@ -112,7 +128,8 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
                     //ASK WETHER TO EXIT APP OR NOT
                     WillPopScope(
                       onWillPop: () async {
-                        return _onBackPressed(context).then((value) => value ?? false);
+                        return _onBackPressed(context)
+                            .then((value) => value ?? false);
                       },
                       child: const SizedBox(),
                     ),
@@ -120,7 +137,6 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
                       height: 30,
                     ),
                     Card(
-                      color: AppColors.lightBlue,
                       elevation: 4.0,
                       margin: const EdgeInsets.all(20.0),
                       shape: RoundedRectangleBorder(
@@ -131,7 +147,7 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
                           Container(
                             margin: const EdgeInsets.only(
                                 top: 20.0), // Add margin from the top
-                            child: Row(
+                            child: Column(
                               children: [
                                 const CircleAvatar(
                                   radius:
@@ -143,24 +159,34 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
                                     width:
                                         20), // Add spacing between the picture and text
                                 Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Container(
-                                      width:150,
-                                      child: Text(
-                                        employeeProfile.empName,
-                                        style: GoogleFonts.montserrat(
-                                          textStyle: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20, // Increase font size
-                                            color: Colors.black,
-                                          ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Text(
+                                      employeeProfile.empName,
+                                      style: GoogleFonts.montserrat(
+                                        textStyle: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20, // Increase font size
+                                          color: Colors.black,
                                         ),
-                                        softWrap: true,
+                                      ),
+                                      softWrap: true,
+                                    ),
+                                    Text(
+                                      "${employeeProfile.emailAddress}",
+                                      style: GoogleFonts.montserrat(
+                                        textStyle: const TextStyle(
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: 16, // Increase font size
+                                          color: Colors.black,
+                                        ),
                                       ),
                                     ),
                                     Text(
-                                      "Code: ${employeeProfile.empCode}",
+                                      "Join Date: ${DateFormat('dd MMM yy').format(employeeProfile.dateofJoin)}",
                                       style: GoogleFonts.montserrat(
                                         textStyle: const TextStyle(
                                           fontWeight: FontWeight.w300,
@@ -183,28 +209,60 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                IconButton(
-                                  icon: const Icon(FontAwesomeIcons.phone,
-                                      color: Colors.white),
-                                  onPressed: () {
-                                    // Add your call functionality here
-                                  },
-                                ),
-                                IconButton(
-                                  icon: const Icon(FontAwesomeIcons.envelope,
-                                      color: Colors.white),
-                                  onPressed: () {
-                                    // Add your mail functionality here
-                                  },
-                                ),
-                                IconButton(
-                                  icon: const Icon(
-                                    FontAwesomeIcons.comment,
-                                    color: Colors.white,
+                                Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors
+                                        .blue, // Change the color as needed
                                   ),
-                                  onPressed: () {
-                                    // Add your message functionality here
-                                  },
+                                  child: Center(
+                                    child: IconButton(
+                                      icon: const Icon(FontAwesomeIcons.phone,
+                                          color: Colors.white),
+                                      onPressed: () {
+                                        // Add your call functionality here
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors
+                                        .grey, // Change the color as needed
+                                  ),
+                                  child: Center(
+                                    child: IconButton(
+                                      icon: const Icon(
+                                          FontAwesomeIcons.envelope,
+                                          color: Colors.white),
+                                      onPressed: () {
+                                        // Add your call functionality here
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors
+                                        .green, // Change the color as needed
+                                  ),
+                                  child: Center(
+                                    child: IconButton(
+                                      icon: const Icon(FontAwesomeIcons.message,
+                                          color: Colors.white),
+                                      onPressed: () {
+                                        // Add your call functionality here
+                                      },
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -213,47 +271,7 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 20),
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          // Use a gradient background for more colors
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            AppColors.lightBlue,
-                            AppColors.secondaryColor
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildField("Name", employeeProfile.empName),
-                          _buildField("Email", employeeProfile.emailAddress),
-                          _buildField("Shift Code", employeeProfile.shiftCode),
-                          _buildField(
-                            "Join Date",
-                            DateFormat('MMMM d, y')
-                                .format(employeeProfile.dateofJoin),
-                          ),
-                          _buildField("Emp Code", employeeProfile.empCode),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 20),
+
                     const Divider(
                       color: Colors.grey,
                       height: 2,
@@ -262,7 +280,7 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
                     // Menu
                     _buildTileWidget(
                       title: 'Edit Profile',
-                      icon: Icons.supervised_user_circle_sharp,
+                      icon: FontAwesomeIcons.pencil,
                       onTap: () async {
                         // Navigate to EmpEditProfilePage and pass the refreshData callback
                         await Navigator.push(
@@ -276,13 +294,11 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
                       },
                     ),
 
-                    _buildTileWidget(
-                      title: 'Information',
-                      icon: Icons.info_outline,
-                    ),
+                    SizedBox(height: 20,),
                     _buildTileWidget(
                       title: 'Logout',
                       icon: Icons.logout,
+                      onTap: () => _logout(context),
                     ),
                   ],
                 ),
@@ -339,27 +355,32 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
     required IconData icon,
     VoidCallback? onTap,
   }) {
-    return ListTile(
-      onTap: onTap,
-      leading: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: AppColors.navyBlue,
-        ),
-        child: Icon(icon, color: Colors.white),
-      ),
-      title: Text(
-        title,
-        style: GoogleFonts.raleway(
-          textStyle: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16.0,
+    return GestureDetector(
+        onTap: onTap,
+        child: Center(
+          child: Container(
+            alignment: Alignment.bottomCenter,
+            margin: EdgeInsets.all(15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon,color: Colors.red,),
+                SizedBox(width: 20),
+                Text(
+                  title,
+                  style: GoogleFonts.raleway(
+                    textStyle: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.0, // Increase the font size
+                      color: Colors.black, // Change the text color
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
-      trailing: const Icon(Icons.navigate_next),
+        )
+
     );
   }
 }

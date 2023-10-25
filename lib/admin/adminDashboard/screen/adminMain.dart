@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:project/admin/adminOptionsReport/screens/AdminMonthlyAndDailyReportsMainPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lottie/lottie.dart';
 import '../../../constants/AppColor_constants.dart';
@@ -238,7 +239,7 @@ class _MainPageState extends State<AdminMainPage> {
           } else if (state is NavigateToHomeState) {
             return const AdminDashboard();
           } else if (state is NavigateToReportsState) {
-            return const AdminReportsPage();
+            return  AdminMonthlyAndDailyReportsMainPage();
           } else if (state is NavigateToLogoutState) {
             return AlertDialog(
               title: const Text("Confirm Logout"),

@@ -90,15 +90,16 @@ class _EmpMainPageState extends State<EmpMainPage> {
                 drawer: Drawer(
                   child: Column(
                     children: [
-                      UserAccountsDrawerHeader(
-                        decoration: const BoxDecoration(
-                          color: AppColors.primaryColor,
-                        ),
-                        accountName: Text(empProfile?.empName ?? ""),
-                        accountEmail: Text(empProfile?.emailAddress ?? ""),
-                        currentAccountPicture: const CircleAvatar(
-                          backgroundImage: AssetImage(
-                            "assets/icons/userr.png",
+                      GestureDetector(
+                        onTap: () => fetchProfileData(),
+                        child: UserAccountsDrawerHeader(
+                          decoration: const BoxDecoration(
+                            color: AppColors.primaryColor,
+                          ),
+                          accountName: Text(empProfile?.empName ?? ""),
+                          accountEmail: Text(empProfile?.emailAddress ?? ""),
+                          currentAccountPicture:  CircleAvatar(
+                            backgroundImage: NetworkImage(empProfile?.profilePic ?? ""),
                           ),
                         ),
                       ),
