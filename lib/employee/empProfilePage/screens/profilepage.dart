@@ -151,15 +151,18 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
                                 top: 20.0), // Add margin from the top
                             child: Column(
                               children: [
-                                 CircleAvatar(
+                                CircleAvatar(
                                   radius:
                                       70.0, // Increase the radius to make it larger
-                                  backgroundImage:employeeProfile.profilePic != null && employeeProfile.profilePic.isNotEmpty
+                                  backgroundImage: employeeProfile.profilePic !=
+                                              null &&
+                                          employeeProfile.profilePic.isNotEmpty
                                       ? Image.memory(
-                                    Uint8List.fromList(base64Decode(employeeProfile.profilePic)),
-                                  ).image
-                                      : const AssetImage('assets/icons/userr.png'),
-
+                                          Uint8List.fromList(base64Decode(
+                                              employeeProfile.profilePic)),
+                                        ).image
+                                      : const AssetImage(
+                                          'assets/icons/userr.png'),
                                 ),
                                 const SizedBox(
                                     width:
@@ -300,7 +303,9 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
                       },
                     ),
 
-                    const SizedBox(height: 20,),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     _buildTileWidget(
                       title: 'Logout',
                       icon: Icons.logout,
@@ -370,7 +375,10 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(icon,color: Colors.red,),
+                Icon(
+                  icon,
+                  color: Colors.red,
+                ),
                 const SizedBox(width: 20),
                 Text(
                   title,
@@ -385,8 +393,6 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
               ],
             ),
           ),
-        )
-
-    );
+        ));
   }
 }
