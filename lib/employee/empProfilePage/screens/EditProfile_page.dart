@@ -174,7 +174,10 @@ class _EmpEditProfilePageState extends State<EmpEditProfilePage> {
     initCamera();
     _loadUserData();
   }
-
+  Future<Map<String, String>> fetchData() async {
+    await retrieveFromSharedPreferences();
+    return await fetchPlaceholderValues();
+  }
   Future<void> _loadUserData() async {
     await retrieveFromSharedPreferences();
     fetchAndPopulateData();
@@ -214,11 +217,26 @@ class _EmpEditProfilePageState extends State<EmpEditProfilePage> {
         backgroundColor: AppColors.primaryColor,
       ),
       body: FutureBuilder(
-          future: _loadUserData(),
+          future: fetchData(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
+              // While waiting for data, show a loading indicator
               return Center(child: CircularProgressIndicator());
-            } else {
+            } else if (snapshot.hasError) {
+              // Handle error, for example, show an error message
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (!snapshot.hasData) {
+              // Handle case where no data is available
+              return Center(child: Text('No data available'));
+            }  else {
+
+              final apiData = snapshot.data!;
+
+              empNameController.text = apiData['empName'] ?? '';
+              fatherNameController.text = apiData['fatherName'] ?? '';
+              pwdController.text = apiData['pwd'] ?? '';
+              emailAddressController.text = apiData['emailAddress'] ?? '';
+              phoneNoController.text = apiData['phoneNo'] ?? '';
               return BlocProvider(
                 create: (context) => EmpEditProfileBloc(
                     empEditProfileRepository: EmpEditProfileRepository()),

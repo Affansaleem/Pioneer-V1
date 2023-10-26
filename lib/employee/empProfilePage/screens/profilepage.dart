@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,20 +58,20 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
     bool? exitConfirmed = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Confirm Exit'),
-        content: Text('Are you sure you want to exit the app?'),
+        title: const Text('Confirm Exit'),
+        content: const Text('Are you sure you want to exit the app?'),
         actions: <Widget>[
           TextButton(
             onPressed: () {
               Navigator.of(context).pop(false);
             },
-            child: Text('No'),
+            child: const Text('No'),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop(true);
             },
-            child: Text('Yes'),
+            child: const Text('Yes'),
           ),
         ],
       ),
@@ -149,11 +151,15 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
                                 top: 20.0), // Add margin from the top
                             child: Column(
                               children: [
-                                const CircleAvatar(
+                                 CircleAvatar(
                                   radius:
                                       70.0, // Increase the radius to make it larger
-                                  backgroundImage:
-                                      AssetImage('assets/icons/man.png'),
+                                  backgroundImage:employeeProfile.profilePic != null && employeeProfile.profilePic.isNotEmpty
+                                      ? Image.memory(
+                                    Uint8List.fromList(base64Decode(employeeProfile.profilePic)),
+                                  ).image
+                                      : const AssetImage('assets/icons/userr.png'),
+
                                 ),
                                 const SizedBox(
                                     width:
@@ -161,7 +167,7 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 20,
                                     ),
                                     Text(
@@ -212,7 +218,7 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
                                 Container(
                                   width: 50,
                                   height: 50,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: Colors
                                         .blue, // Change the color as needed
@@ -230,7 +236,7 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
                                 Container(
                                   width: 50,
                                   height: 50,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: Colors
                                         .grey, // Change the color as needed
@@ -249,7 +255,7 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
                                 Container(
                                   width: 50,
                                   height: 50,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: Colors
                                         .green, // Change the color as needed
@@ -294,7 +300,7 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
                       },
                     ),
 
-                    SizedBox(height: 20,),
+                    const SizedBox(height: 20,),
                     _buildTileWidget(
                       title: 'Logout',
                       icon: Icons.logout,
@@ -360,16 +366,16 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
         child: Center(
           child: Container(
             alignment: Alignment.bottomCenter,
-            margin: EdgeInsets.all(15),
+            margin: const EdgeInsets.all(15),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(icon,color: Colors.red,),
-                SizedBox(width: 20),
+                const SizedBox(width: 20),
                 Text(
                   title,
                   style: GoogleFonts.raleway(
-                    textStyle: TextStyle(
+                    textStyle: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20.0, // Increase the font size
                       color: Colors.black, // Change the text color
