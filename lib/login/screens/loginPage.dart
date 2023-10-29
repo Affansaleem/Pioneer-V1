@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:project/constants/AppColor_constants.dart';
+import 'package:project/constants/globalObjects.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../No_internet/no_internet.dart';
 import '../../admin/adminDashboard/screen/adminMain.dart';
@@ -18,13 +18,15 @@ import 'halfCircleClipper.dart';
 
 class LoginPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  LoginPageState createState() => LoginPageState();
 }
 
 enum UserType { employee, admin }
 
-class _LoginPageState extends State<LoginPage> {
-  UserType? _selectedUserType = UserType.employee; // Default selection
+class LoginPageState extends State<LoginPage> {
+
+
+  UserType? _selectedUserType = UserType.employee;
   final _passwordController = TextEditingController();
   final _CoorporateIdController = TextEditingController();
   final _UserController = TextEditingController();
@@ -36,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
       UserRepository(); // Create an instance of UserRepository
   String? corporateId; // Declare as nullable
 
-  void _handleAdminLogin(
+  void handleAdminLogin(
     String enteredCorporateID,
     String enteredUsername,
     String enteredPassword,
@@ -128,6 +130,10 @@ class _LoginPageState extends State<LoginPage> {
     sharedPrefEmp.setString('cardNo', cardNo);
     sharedPrefEmp.setString('empCode', empCode);
     sharedPrefEmp.setInt('employee_id', employeeId);
+   GlobalObjects.empCode = empCode;
+   GlobalObjects.empId = employeeId;
+   print("${GlobalObjects.empCode} ${GlobalObjects.empId}");
+    print(sharedPrefEmp.getInt('employee_id'));
   }
 
   void _loginAsAdmin() async {
@@ -189,7 +195,7 @@ class _LoginPageState extends State<LoginPage> {
         // Execute admin-related functions
         corporateId = _CoorporateIdController.text;
 
-        _handleAdminLogin(
+        handleAdminLogin(
           corporateId!,
           enteredUsername,
           enteredPassword,
@@ -258,42 +264,52 @@ class _LoginPageState extends State<LoginPage> {
                     child: Container(
                       height: MediaQuery.of(context).size.height * 0.5,
                       width: MediaQuery.of(context).size.width,
-                      color: AppColors.secondaryColor,
+                      color: AppColors.primaryColor,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
+
                           const SizedBox(
                             height: 20,
                           ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Card(
-                            elevation: 4,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.white,
-                                      blurRadius: 4,
-                                      offset: Offset(0, 8),
-                                    ),
-                                  ],
-                                ),
-                                child: Image.asset(
-                                  'assets/images/pioneer_logo_app.png',
-                                  fit: BoxFit.contain,
-                                  height: 150,
-                                  width: 300,
-                                ),
-                              ),
+                          // Align(
+                          //   alignment: Alignment.topLeft,
+                          //   child: Card(
+                          //     elevation: 4,
+                          //     shape: RoundedRectangleBorder(
+                          //       borderRadius: BorderRadius.circular(12),
+                          //     ),
+                          //     child: ClipRRect(
+                          //       borderRadius: BorderRadius.circular(12),
+                          //       child: Container(
+                          //         decoration: const BoxDecoration(
+                          //           boxShadow: [
+                          //             BoxShadow(
+                          //               color: Colors.white,
+                          //               blurRadius: 4,
+                          //               offset: Offset(0, 8),
+                          //             ),
+                          //           ],
+                          //         ),
+                          //         child: Image.asset(
+                          //           'assets/images/pioneer_logo_app.png',
+                          //           fit: BoxFit.contain,
+                          //           height: 50,
+                          //           width: 50,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+                          Text(
+                            "PIONEER TIME ATTENDANCE",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 25, // Adjust the size as needed
+                              color: Colors.white, // Adjust the color as needed
                             ),
                           )
+                          
                         ],
                       ),
                     ),

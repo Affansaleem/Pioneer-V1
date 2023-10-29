@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:project/constants/AppColor_constants.dart';
+import 'package:project/constants/globalObjects.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 import 'package:camera/camera.dart';
@@ -85,10 +86,29 @@ class _EmpEditProfilePageState extends State<EmpEditProfilePage> {
     if (pickedFile != null) {
       final imageBytes = await pickedFile.readAsBytes();
       base64Image = base64Encode(imageBytes);
-
-      setState(() {
-        _profilePicture = File(pickedFile.path);
-      });
+      if (imageBytes.length < 5 * 1024 * 1024) {
+        Fluttertoast.showToast(
+          msg: 'Image Size Must be less than 5 Mb!..!',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.redAccent,
+          textColor: Colors.white,
+        );
+      } else {
+        setState(() {
+          base64Image = base64Encode(imageBytes);
+          _profilePicture = File(pickedFile.path);
+        });
+        Fluttertoast.showToast(
+          msg: 'Picture Is Uploaded!',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+        );
+      }
     }
   }
 
@@ -100,10 +120,22 @@ class _EmpEditProfilePageState extends State<EmpEditProfilePage> {
     if (pickedFile != null) {
       final imageBytes = await pickedFile.readAsBytes();
       base64Image = base64Encode(imageBytes);
-
-      setState(() {
-        _profilePicture = File(pickedFile.path);
-      });
+      if ((imageBytes.length < 5 * 1024)) {
+        Fluttertoast.showToast(
+          msg: 'Image Size Must be less than 5 Mb!..!',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.redAccent,
+          textColor: Colors.white,
+        );
+      } else {
+        setState(() {
+          GlobalObjects.empProfilePic =
+          base64Image = base64Encode(imageBytes);
+          _profilePicture = File(pickedFile.path);
+        });
+      }
     }
   }
 
@@ -174,10 +206,12 @@ class _EmpEditProfilePageState extends State<EmpEditProfilePage> {
     initCamera();
     _loadUserData();
   }
+
   Future<Map<String, String>> fetchData() async {
     await retrieveFromSharedPreferences();
     return await fetchPlaceholderValues();
   }
+
   Future<void> _loadUserData() async {
     await retrieveFromSharedPreferences();
     fetchAndPopulateData();
@@ -211,7 +245,10 @@ class _EmpEditProfilePageState extends State<EmpEditProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Edit Profile",style: TextStyle(color: AppColors.brightWhite),),
+        title: Text(
+          "Edit Profile",
+          style: TextStyle(color: AppColors.brightWhite),
+        ),
         centerTitle: true,
         iconTheme: IconThemeData(color: AppColors.brightWhite),
         backgroundColor: AppColors.primaryColor,
@@ -228,8 +265,7 @@ class _EmpEditProfilePageState extends State<EmpEditProfilePage> {
             } else if (!snapshot.hasData) {
               // Handle case where no data is available
               return Center(child: Text('No data available'));
-            }  else {
-
+            } else {
               final apiData = snapshot.data!;
 
               empNameController.text = apiData['empName'] ?? '';
@@ -249,7 +285,8 @@ class _EmpEditProfilePageState extends State<EmpEditProfilePage> {
                         BackdropFilter(
                           filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                           child: Container(
-                            color: Colors.black.withOpacity(0), // Adjust opacity as needed
+                            color: Colors.black
+                                .withOpacity(0), // Adjust opacity as needed
                           ),
                         ),
                         Card(
@@ -262,7 +299,12 @@ class _EmpEditProfilePageState extends State<EmpEditProfilePage> {
                               gradient: LinearGradient(
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
-                                colors: [AppColors.primaryColor,AppColors.secondaryColor, AppColors.lightBlue,Colors.white], // Adjust colors as needed
+                                colors: [
+                                  AppColors.primaryColor,
+                                  AppColors.secondaryColor,
+                                  AppColors.lightBlue,
+                                  Colors.white
+                                ], // Adjust colors as needed
                               ),
                               borderRadius: BorderRadius.circular(10),
                               boxShadow: [
@@ -320,8 +362,8 @@ class _EmpEditProfilePageState extends State<EmpEditProfilePage> {
                                   // Use the controller here
                                   decoration: InputDecoration(
                                     labelText: 'Full Name',
-                                    labelStyle:
-                                        GoogleFonts.poppins(color: AppColors.brightWhite),
+                                    labelStyle: GoogleFonts.poppins(
+                                        color: AppColors.brightWhite),
                                   ),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -339,8 +381,8 @@ class _EmpEditProfilePageState extends State<EmpEditProfilePage> {
                                   controller: fatherNameController,
                                   decoration: InputDecoration(
                                     labelText: "Father's Name",
-                                    labelStyle:
-                                        GoogleFonts.poppins(color: AppColors.brightWhite),
+                                    labelStyle: GoogleFonts.poppins(
+                                        color: AppColors.brightWhite),
                                   ),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
@@ -356,8 +398,8 @@ class _EmpEditProfilePageState extends State<EmpEditProfilePage> {
                                   controller: pwdController,
                                   decoration: InputDecoration(
                                     labelText: 'Password',
-                                    labelStyle:
-                                        GoogleFonts.poppins(color: AppColors.brightWhite),
+                                    labelStyle: GoogleFonts.poppins(
+                                        color: AppColors.brightWhite),
                                     suffixIcon: IconButton(
                                       icon: Icon(
                                         isPasswordVisible
@@ -387,8 +429,8 @@ class _EmpEditProfilePageState extends State<EmpEditProfilePage> {
                                   controller: emailAddressController,
                                   decoration: InputDecoration(
                                     labelText: 'Email Address',
-                                    labelStyle:
-                                        GoogleFonts.poppins(color: AppColors.brightWhite),
+                                    labelStyle: GoogleFonts.poppins(
+                                        color: AppColors.brightWhite),
                                   ),
                                   keyboardType: TextInputType.emailAddress,
                                   validator: (value) {
@@ -405,8 +447,8 @@ class _EmpEditProfilePageState extends State<EmpEditProfilePage> {
                                   controller: phoneNoController,
                                   decoration: InputDecoration(
                                     labelText: 'Phone Number',
-                                    labelStyle:
-                                        GoogleFonts.poppins(color: AppColors.brightWhite),
+                                    labelStyle: GoogleFonts.poppins(
+                                        color: AppColors.brightWhite),
                                   ),
                                   keyboardType: TextInputType.phone,
                                   validator: (value) {
@@ -459,7 +501,7 @@ class _EmpEditProfilePageState extends State<EmpEditProfilePage> {
                                               _formKey.currentState!.save();
                                               final dataToSubmit =
                                                   EmpEditProfileModel(
-                                                empId: 3,
+                                                empId: GlobalObjects.empId,
                                                 empName: empNameController.text,
                                                 fatherName:
                                                     fatherNameController.text,
@@ -475,6 +517,7 @@ class _EmpEditProfilePageState extends State<EmpEditProfilePage> {
                                               await Future.delayed(
                                                   Duration(seconds: 1));
                                               setState(() {});
+
                                               Navigator.pop(context);
                                               Fluttertoast.showToast(
                                                 msg:
@@ -489,7 +532,8 @@ class _EmpEditProfilePageState extends State<EmpEditProfilePage> {
                                             }
                                           },
                                           style: ElevatedButton.styleFrom(
-                                            backgroundColor:AppColors.primaryColor,
+                                            backgroundColor:
+                                                AppColors.primaryColor,
                                           ),
                                           child: Text(
                                             'Save',

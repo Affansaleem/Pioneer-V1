@@ -7,24 +7,31 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:project/constants/AppColor_constants.dart';
+import 'package:project/employee/empDashboard/screens/employeeMain.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../constants/globalObjects.dart';
 import '../../../login/bloc/loginBloc/loginbloc.dart';
 import '../../../login/screens/loginPage.dart';
+import '../../empDashboard/screens/empHomePage.dart';
 import '../bloc/emProfileApiFiles/emp_profile_api_bloc.dart';
 import '../models/empProfileModel.dart';
 import '../models/empProfileRepository.dart';
 import 'EditProfile_page.dart';
+typedef void RefreshDataCallback();
 
 class EmpProfilePage extends StatefulWidget {
-  EmpProfilePage({
-    super.key,
-  });
+  final RefreshDataCallback? onRefreshData;
+
+  EmpProfilePage({Key? key, this.onRefreshData}) : super(key: key);
+
 
   @override
-  State<EmpProfilePage> createState() => _EmpProfilePageState();
+  State<EmpProfilePage> createState() => EmpProfilePageState();
 }
 
-class _EmpProfilePageState extends State<EmpProfilePage> {
+class EmpProfilePageState extends State<EmpProfilePage> {
+  LoginPageState select = LoginPageState();
+
   late EmpProfileApiBloc _profileApiBloc;
   Future<void> _logout(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -46,11 +53,49 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
     );
   }
 
+  EmpProfileRepository _profileRepository = EmpProfileRepository();
+  String? profileImageUrl;
   @override
   void initState() {
+    print("init in emp profile called");
+
     super.initState();
     // Initialize the BlocProvider when the page is created
     _initProfileBloc();
+    fetchProfileData();
+  }
+  void updateProfileData() {
+    initEmpMainPage.fetchProfileData();
+  }
+
+// Call updateProfileData whenever data changes in your profile.
+
+  var initEmpMainPage=EmpMainPageState();
+  Future<void> fetchProfileData() async {
+    print("Now in fetch profile state");
+    updateProfileData();
+    try {
+      final profileData = await _profileRepository.getData();
+      if (profileData.isNotEmpty) {
+        EmpProfileModel? empProfile = profileData.first;
+        final profileImage = empProfile.profilePic;
+
+        if (profileImage != null && profileImage.isNotEmpty) {
+          setState(() {
+            EmpProfileModel? empProfile = profileData.first;
+            profileImageUrl = profileImage;
+            GlobalObjects.empProfilePic = empProfile.profilePic;
+            GlobalObjects.empName = empProfile.empName;
+            GlobalObjects.empMail = empProfile.emailAddress;
+            // print(GlobalObjects.empName);
+            // print(GlobalObjects.empMail);
+          });
+        }
+        // Update your UI with other profile data here
+      }
+    } catch (e) {
+      print("Error fetching profile data: $e");
+    }
   }
 
   Future<bool?> _onBackPressed(BuildContext context) async {
@@ -99,6 +144,9 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
     print("Now in state of refresh User data");
     // Dispatch an event to fetch new data from the API
     _profileApiBloc.add(EmpProfileLoadingEvent());
+    if (widget.onRefreshData != null) {
+      widget.onRefreshData!();
+    }
   }
 
   @override
@@ -153,12 +201,14 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
                                 CircleAvatar(
                                   radius:
                                       70.0, // Increase the radius to make it larger
-                                  backgroundImage: employeeProfile.profilePic !=
+                                  backgroundImage: GlobalObjects
+                                                  .empProfilePic !=
                                               null &&
-                                          employeeProfile.profilePic.isNotEmpty
+                                          GlobalObjects
+                                              .empProfilePic!.isNotEmpty
                                       ? Image.memory(
                                           Uint8List.fromList(base64Decode(
-                                              employeeProfile.profilePic)),
+                                              GlobalObjects.empProfilePic!)),
                                         ).image
                                       : const AssetImage(
                                           'assets/icons/userr.png'),
@@ -298,6 +348,7 @@ class _EmpProfilePageState extends State<EmpProfilePage> {
                             type: PageTransitionType.rightToLeft,
                           ),
                         );
+                        fetchProfileData();
                         refreshUserData();
                       },
                     ),

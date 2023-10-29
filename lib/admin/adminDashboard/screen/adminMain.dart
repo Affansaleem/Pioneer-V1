@@ -130,12 +130,7 @@ class _MainPageState extends State<AdminMainPage> {
                   pageHeading: _getPageInfo(item),
                 ),
               ),
-              drawer: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(40.0),
-                  bottomRight: Radius.circular(40.0),
-                ),
-                child: Drawer(
+              drawer:Drawer(
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
@@ -146,8 +141,7 @@ class _MainPageState extends State<AdminMainPage> {
                           child: UserAccountsDrawerHeader(
                             decoration: BoxDecoration(
                               color: AppColors.primaryColor,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
+                             ),
                             accountName: Text(userProfile.name),
                             accountEmail: Text(userProfile.email),
                             currentAccountPicture: const CircleAvatar(
@@ -193,7 +187,7 @@ class _MainPageState extends State<AdminMainPage> {
                       ],
                     ),
                   ),
-                ),
+
               ),
               backgroundColor: Colors.white,
               body: getDrawerPage(),
@@ -239,7 +233,7 @@ class _MainPageState extends State<AdminMainPage> {
           } else if (state is NavigateToHomeState) {
             return const AdminDashboard();
           } else if (state is NavigateToReportsState) {
-            return  AdminMonthlyAndDailyReportsMainPage();
+            return  AdminMonthlyAndDailyReportsMainPage(viaDrawer: true,);
           } else if (state is NavigateToLogoutState) {
             return AlertDialog(
               title: const Text("Confirm Logout"),
@@ -275,7 +269,7 @@ class _MainPageState extends State<AdminMainPage> {
       case AdminDrawerItems.home:
         return "HOME";
       case AdminDrawerItems.geofence:
-        return "GEOFENCE HUB";
+        return "GEOFENCE";
       case AdminDrawerItems.profile:
         return "PROFILE";
       case AdminDrawerItems.reports:
